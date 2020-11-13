@@ -7,10 +7,6 @@
   stroke: #4C535D;
 }
 
-#app-container .ui.grid > .row {
-  padding: 0px;
-}
-
 #app-container .invisible-button {
   width: 100%;
   background: transparent;
@@ -23,4 +19,37 @@
 
 #app-container .invisible-button:hover {
   color: #2F88E2;
+}
+
+#app-container .theme-line-card {
+  box-shadow: unset;
+  width: 100%;
+  background-color: #EEEEEE;
+  padding: 5px;
+}
+
+#app-container .theme-line-card .theme-line-title {
+  color: #2F88E2;
+}
+
+.theme-line-value-input {
+  width: 100%;
+}
+
+#app-container .ui.input > input {
+  padding: 5px 10px;
+}
+
+.theme-line-radio-button {
+  padding-right: 15px;
+}
+
+#app-container .theme-line-save-button {
+  color: #ffffff;
+  background-color: #2F88E2;
+  padding: 5px 15px;
+}
+
+#app-container .theme-line-form-row {
+  padding: 5px 0px;
 }
