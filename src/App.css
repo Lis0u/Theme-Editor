@@ -1,0 +1,14 @@
+#app-container {
+  margin: auto;
+  margin-top: 50px;
+  border: 1px solid black;
+  padding: 20px;
+  max-width: 600px;
+  color: #575757;
+}
+
+#app-title {
+  color: #4a86e8;
+  font-size: 2em;
+  font-weight: normal;
+}

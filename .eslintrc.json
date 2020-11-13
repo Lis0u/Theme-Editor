@@ -1,0 +1,30 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "rules": {
+    "linebreak-style": "off",
+    "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
+    "no-use-before-define": ["error", { "functions": false, "classes": false }],
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "always",
+        "named": "always",
+        "asyncArrow": "always"
+      }
+    ],
+    "react/destructuring-assignment": ["off", "never"],
+    "prefer-destructuring": ["error", { "array": false, "object": false }],
+    "react/sort-comp": ["off", "never"],
+    "jsx-a11y/label-has-for": "off",
+    "max-len": ["error", { "code": 120 }],
+    "react/jsx-fragements": ["off", "never"],
+    "no-unused-expressions": ["error", { "allowTernary": true }]
+  }
+}

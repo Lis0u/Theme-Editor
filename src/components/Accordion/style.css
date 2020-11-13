@@ -1,0 +1,10 @@
+#accordion-content-padding {
+  padding-left: 22px;
+  padding-bottom: 20px;
+}
+
+#app-container .ui.accordion .title:not(.ui) {
+  color: #575757;
+  font-size: 17px;
+  padding-bottom: 20px;
+}

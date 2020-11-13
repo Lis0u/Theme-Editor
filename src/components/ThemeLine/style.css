@@ -1,0 +1,26 @@
+.variable-name {
+  font-style: italic;
+}
+
+.color-info-rect {
+  stroke-width: 1;
+  stroke: #4C535D;
+}
+
+#app-container .ui.grid > .row {
+  padding: 0px;
+}
+
+#app-container .invisible-button {
+  width: 100%;
+  background: transparent;
+  text-align: left;
+  line-height: unset;
+  font-weight: unset;
+  padding: unset;
+  margin: unset;
+}
+
+#app-container .invisible-button:hover {
+  color: #2F88E2;
+}
