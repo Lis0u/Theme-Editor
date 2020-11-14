@@ -7,9 +7,11 @@ import './style.css';
 import { getTransformedValue } from '../../helper/themeValueGetter';
 
 const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
-  const [value, setValue] = useState(null);
-  const [radioValue, setRadioValue] = useState('');
+  const [value, setValue] = useState(themeProps.value);
+  const [radioValue, setRadioValue] = useState(themeProps.type);
 
+  const typeToDisplay = themeProps.type === 'em' || themeProps.type === 'px'
+    ? ` (${themeProps.type})` : '';
   return (
     <Card className="theme-line-card">
       <Card.Content>
@@ -17,11 +19,13 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
           <Grid.Row
             className="theme-line-title theme-line-form-row"
             style={{
-              color: getTransformedValue(theme['colors.highlight1'], theme)
+              color: getTransformedValue(theme['colors.highlight1'], theme),
+              fontSize: getTransformedValue(theme['textfield.textSize'], theme) + theme['textfield.textSize'].type
             }}
           >
             <Grid.Column computer={10}>
-              {title}: <strong>{getTransformedValue(themeProps, theme)}</strong>
+              {title}{typeToDisplay}:
+              <strong style={{ paddingRight: '5px' }}>{` ${getTransformedValue(themeProps, theme)}`}</strong>
               {handleColorInfoRenderer()}
             </Grid.Column>
             <Grid.Column computer={5} className="variable-name">
@@ -38,8 +42,13 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
             <Grid.Column computer={14}>
               <Input
                 className="theme-line-value-input"
-                value={value || themeProps.value}
+                value={value}
+                min={radioValue === 'em' ? 0.1 : radioValue === 'px' ? 1 : ''}
+                type={radioValue === 'text' || radioValue === 'color' ? 'text' : 'number'}
                 onChange={(e) => handleInputChange(e.target.value)}
+                style={{
+                  color: getTransformedValue(theme['textfield.color'], theme)
+                }}
               />
             </Grid.Column>
           </Grid.Row>
@@ -51,32 +60,35 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
               <Radio
                 className="theme-line-radio-button"
                 label="text"
-                checked={(radioValue || themeProps.type) === 'text'}
+                checked={(radioValue) === 'text'}
                 onChange={() => setRadioValue('text')}
               />
               <Radio
                 className="theme-line-radio-button"
                 label="em"
-                checked={(radioValue || themeProps.type) === 'em'}
+                checked={(radioValue) === 'em'}
                 onChange={() => setRadioValue('em')}
               />
               <Radio
                 className="theme-line-radio-button"
                 label="px"
-                checked={(radioValue || themeProps.type) === 'px'}
+                checked={(radioValue) === 'px'}
                 onChange={() => setRadioValue('px')}
               />
               <Radio
                 className="theme-line-radio-button"
                 label="color"
-                checked={(radioValue || themeProps.type) === 'color'}
+                checked={(radioValue) === 'color'}
                 onChange={() => setRadioValue('color')}
               />
             </Grid.Column>
             <Grid.Column computer={4} floated="right" textAlign="right">
               <Button
                 className="theme-line-save-button" 
-                style={{ color: theme['buttons.color'].value, backgroundColor: theme['buttons.background'].value }}
+                style={{
+                  color: getTransformedValue(theme['buttons.color'], theme),
+                  backgroundColor: getTransformedValue(theme['buttons.background'], theme),
+                }}
                 onClick={() => handleSave()}
               >
                 OK
@@ -93,7 +105,14 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
     if (themeProps.value.toString().match(colorRegex)) {
       return (
         <svg width="15" height="15">
-          <rect width="15" height="15" rx="5" ry="5" className="color-info-rect" style={{ fill: themeProps.value }} />
+          <rect
+            width="15"
+            height="15" 
+            rx="5"
+            ry="5"
+            className="color-info-rect"
+            style={{ fill: getTransformedValue(themeProps, theme) }}
+          />
         </svg>
       );
     }
@@ -120,15 +139,11 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
 ThemeLine.propTypes = {
   setEditMode: PropTypes.func,
   theme: PropTypes.shape({
-    'buttons.background': PropTypes.shape({
-      value: PropTypes.string,
-    }),
-    'buttons.color': PropTypes.shape({
-      value: PropTypes.string,
-    }),
-    'colors.highlight1': PropTypes.shape({
-      value: PropTypes.string,
-    }),
+    'buttons.background': PropTypes.shape({ value: PropTypes.string }),
+    'buttons.color': PropTypes.shape({ value: PropTypes.string }),
+    'colors.highlight1': PropTypes.shape({ value: PropTypes.string }),
+    'textfield.color': PropTypes.shape({ value: PropTypes.string }),
+    'textfield.textSize': PropTypes.shape({ type: PropTypes.string })
   }),
   title: PropTypes.string,
   themeProps: PropTypes.shape({
@@ -144,6 +159,8 @@ ThemeLine.defaultProps = {
     'buttons.background': { value: '#ffffff', type: 'color' },
     'buttons.color': { value: '#4a86e8', type: 'color' },
     'colors.highlight1': { value: '#4a86e8', type: 'color' },
+    'textfield.color': { value: '#000000', type: 'color' },
+    'textfield.textSize': { value: '1.1', type: 'em' },
   },
   themeProps: {
     value: '',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
@@ -6,12 +6,27 @@ import './style.css';
 import { getTransformedValue } from '../../helper/themeValueGetter';
 
 const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme }) => {
+  const transformedValue = getTransformedValue(themeProps, theme);
+  const [isLineHovered, setIsLineHovered] = useState(false);
+
+  const typeToDisplay = themeProps.type === 'em' || themeProps.type === 'px'
+    ? ` (${themeProps.type})` : '';
   return (
-    <Button className="invisible-button" onClick={() => handleClick()}>
+    <Button
+      className="invisible-button"
+      onClick={() => handleClick()}
+      style={{
+        color: isLineHovered ? getTransformedValue(theme['colors.highlight1'], theme) : 'inherit',
+        fontSize: getTransformedValue(theme['sizes.text'], theme) + theme['sizes.text'].type
+      }}
+      onMouseEnter={() => setIsLineHovered(true)}
+      onMouseLeave={() => setIsLineHovered(false)}
+    >
       <Grid>
         <Grid.Row className="theme-line-display-row">
           <Grid.Column computer={10}>
-            {title}: <strong>{getTransformedValue(themeProps, theme)}</strong>
+            {title}{typeToDisplay}:
+            <strong style={{ paddingRight: '5px' }}>{` ${transformedValue}`}</strong>
             {handleColorInfoRenderer()}
           </Grid.Column>
           <Grid.Column computer={6} className="variable-name">
@@ -28,10 +43,10 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
 
   function handleColorInfoRenderer () {
     const colorRegex = /#[0-9A-Fa-f]{6}/gi;
-    if (themeProps.value && themeProps.value.toString().match(colorRegex)) {
+    if (transformedValue && transformedValue.toString().match(colorRegex)) {
       return (
         <svg width="15" height="15">
-          <rect width="15" height="15" rx="5" ry="5" className="color-info-rect" style={{ fill: themeProps.value }} />
+          <rect width="15" height="15" ry="5" className="color-info-rect" style={{ fill: transformedValue }} />
         </svg>
       );
     }
@@ -42,9 +57,9 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
 ThemeLineDisplay.propTypes = {
   setEditMode: PropTypes.func,
   theme: PropTypes.shape({
-    'colors.secondary': PropTypes.shape({
-      value: PropTypes.string,
-    }),
+    'colors.secondary': PropTypes.shape({ value: PropTypes.string }),
+    'colors.highlight1': PropTypes.shape({ value: PropTypes.string }),
+    'sizes.text': PropTypes.shape({ type: PropTypes.string })
   }),
   title: PropTypes.string,
   themeProps: PropTypes.shape({
@@ -58,7 +73,9 @@ ThemeLineDisplay.propTypes = {
 ThemeLineDisplay.defaultProps = {
   setEditMode: () => {},
   theme: {
-    'colors.secondary': '#ffffff',
+    'colors.secondary': { value: '#ffffff' },
+    'colors.highlight1': { value: '#4a86e8' },
+    'sizes.text': { type: 'text' },
   },
   title: '',
   themeProps: {

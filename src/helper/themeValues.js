@@ -38,17 +38,17 @@ export const themeValues = [
     title: "Global sizes",
     themeProps: [
       {
-        title: "Default text size (em)",
+        title: "Default text size",
         defaultValue: 1.1,
         variableName: "sizes.text",
       },
       {
-        title: "Header1 text size (em)",
+        title: "Header1 text size",
         defaultValue: 1.4,
         variableName: "sizes.h1",
       },
       {
-        title: "Header2 text size (em)",
+        title: "Header2 text size",
         defaultValue: 1.2,
         variableName: "sizes.h2",
       },
@@ -63,7 +63,7 @@ export const themeValues = [
     title: "Text field",
     themeProps: [
       {
-        title: "Text size (em)",
+        title: "Text size",
         defaultValue: 1.1,
         variableName: "textfield.textSize",
       },

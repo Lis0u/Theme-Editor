@@ -1,5 +1,5 @@
 import React from 'react';
-import ThemeLine from '../ThemeLine';
+import ThemeLineDisplay from '../ThemeLineDisplay';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
@@ -13,7 +13,7 @@ describe('Basic tests on render & mount', () => {
     const store = mockStore({});
     render(
       <Provider store={store}>
-        <ThemeLine />
+        <ThemeLineDisplay />
       </Provider>
     );
   });

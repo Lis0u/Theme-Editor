@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import './style.css';
+import { getTransformedValue } from '../../helper/themeValueGetter';
 
 const SaveButton = ({ theme }) => {
   return (
     <Button
       className="save-button"
-      style={{ color: theme['buttons.color'].value, backgroundColor: theme['buttons.background'].value }}
+      style={{
+        color: getTransformedValue(theme['buttons.color'], theme),
+        backgroundColor: getTransformedValue(theme['buttons.background'], theme) }}
       onClick={() => handleClick()}
     >
       Save
