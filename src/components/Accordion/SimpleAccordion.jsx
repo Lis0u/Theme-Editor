@@ -32,7 +32,7 @@ const SimpleAccordion = ({ title, index, themeLines, theme }) => {
         <ThemeLine
           key={themeLine.variableName}
           title={themeLine.title}
-          value={theme[themeLine.variableName]}
+          themeProps={theme[themeLine.variableName]}
           variableName={themeLine.variableName}
         />,
       );

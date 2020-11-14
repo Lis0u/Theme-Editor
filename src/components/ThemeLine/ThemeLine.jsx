@@ -4,7 +4,7 @@ import ThemeLineDisplay from './ThemeLineDisplay';
 import ThemeLineForm from './ThemeLineForm';
 import './style.css';
 
-const ThemeLine = ({ title, value, variableName }) => {
+const ThemeLine = ({ themeProps, title, variableName }) => {
   const [isInEditMode, setIsInEditMode] = useState(false);
 
   return (
@@ -12,7 +12,7 @@ const ThemeLine = ({ title, value, variableName }) => {
     ? (
       <ThemeLineForm
         title={title}
-        initialValue={value}
+        themeProps={themeProps}
         variableName={variableName}
         setEditMode={(editMode) => setIsInEditMode(editMode)}
       />
@@ -20,23 +20,29 @@ const ThemeLine = ({ title, value, variableName }) => {
     : (
       <ThemeLineDisplay
         title={title}
-        value={value}
         variableName={variableName}
         setEditMode={(editMode) => setIsInEditMode(editMode)}
+        themeProps={themeProps}
       />
     )
   );
 };
 
 ThemeLine.propTypes = {
+  themeProps: PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    type: PropTypes.string,
+  }),
   title: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   variableName: PropTypes.string,
 };
 
 ThemeLine.defaultProps = {
+  themeProps: {
+    value: '',
+    type: 'text',
+  },
   title: '',
-  value: '',
   variableName: '',
 };
 
