@@ -53,11 +53,6 @@
     "redux-mock-store": "^1.5.4"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json"
-    ],
     "moduleNameMapper": {
       "\\.(css|less)$": "identity-obj-proxy"
     }

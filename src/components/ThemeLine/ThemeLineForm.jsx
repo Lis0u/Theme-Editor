@@ -23,16 +23,22 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
               fontSize: getTransformedValue(theme['textfield.textSize'], theme) + theme['textfield.textSize'].type
             }}
           >
-            <Grid.Column computer={10}>
-              {title}{typeToDisplay}:
-              <strong style={{ paddingRight: '5px' }}>{` ${getTransformedValue(themeProps, theme)}`}</strong>
+            <Grid.Column computer={10} data-testid="theme-line-title">
+              {`${title}${typeToDisplay}: `}
+              <strong style={{ paddingRight: '5px' }}>{getTransformedValue(themeProps, theme)}</strong>
               {handleColorInfoRenderer()}
             </Grid.Column>
             <Grid.Column computer={5} className="variable-name">
               {variableName}
             </Grid.Column>
             <Grid.Column computer={1}>
-              <Button className="invisible-button" onClick={() => handleCancel()}>x</Button>
+              <Button
+                className="invisible-button"
+                data-testid="theme-line-cancel-button"
+                onClick={() => handleCancel()}
+              >
+                x
+              </Button>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row className="theme-line-form-row">
@@ -42,6 +48,7 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
             <Grid.Column computer={14}>
               <Input
                 className="theme-line-value-input"
+                data-testid="theme-line-value-input"
                 value={value}
                 min={radioValue === 'em' ? 0.1 : radioValue === 'px' ? 1 : ''}
                 type={radioValue === 'text' || radioValue === 'color' ? 'text' : 'number'}
@@ -59,32 +66,37 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
             <Grid.Column computer={10}>
               <Radio
                 className="theme-line-radio-button"
+                data-testid="radio-text"
                 label="text"
                 checked={(radioValue) === 'text'}
-                onChange={() => setRadioValue('text')}
+                onClick={() => setRadioValue('text')}
               />
               <Radio
                 className="theme-line-radio-button"
+                data-testid="radio-em"
                 label="em"
                 checked={(radioValue) === 'em'}
-                onChange={() => setRadioValue('em')}
+                onClick={() => setRadioValue('em')}
               />
               <Radio
                 className="theme-line-radio-button"
+                data-testid="radio-px"
                 label="px"
                 checked={(radioValue) === 'px'}
-                onChange={() => setRadioValue('px')}
+                onClick={() => setRadioValue('px')}
               />
               <Radio
                 className="theme-line-radio-button"
+                data-testid="radio-color"
                 label="color"
                 checked={(radioValue) === 'color'}
-                onChange={() => setRadioValue('color')}
+                onClick={() => setRadioValue('color')}
               />
             </Grid.Column>
             <Grid.Column computer={4} floated="right" textAlign="right">
               <Button
-                className="theme-line-save-button" 
+                className="theme-line-save-button"
+                data-testid="theme-line-save-button"
                 style={{
                   color: getTransformedValue(theme['buttons.color'], theme),
                   backgroundColor: getTransformedValue(theme['buttons.background'], theme),
@@ -130,7 +142,7 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
   function handleSave () {
     const nextTheme = { ...theme };
     nextTheme[variableName].value = value;
-    nextTheme[variableName].type = radioValue || themeProps.type;
+    nextTheme[variableName].type = radioValue;
     store.dispatch({ type: 'UPDATE_THEME', theme: nextTheme });
     setEditMode(false);
   }

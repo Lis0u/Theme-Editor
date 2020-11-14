@@ -14,9 +14,12 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
   return (
     <Button
       className="invisible-button"
+      data-testid="theme-line-button"
       onClick={() => handleClick()}
       style={{
-        color: isLineHovered ? getTransformedValue(theme['colors.highlight1'], theme) : 'inherit',
+        color: isLineHovered
+          ? getTransformedValue(theme['colors.highlight1'], theme)
+          : getTransformedValue(theme['colors.primary'], theme),
         fontSize: getTransformedValue(theme['sizes.text'], theme) + theme['sizes.text'].type
       }}
       onMouseEnter={() => setIsLineHovered(true)}
@@ -59,7 +62,8 @@ ThemeLineDisplay.propTypes = {
   theme: PropTypes.shape({
     'colors.secondary': PropTypes.shape({ value: PropTypes.string }),
     'colors.highlight1': PropTypes.shape({ value: PropTypes.string }),
-    'sizes.text': PropTypes.shape({ type: PropTypes.string })
+    'sizes.text': PropTypes.shape({ type: PropTypes.string }),
+    'colors.primary': PropTypes.shape({ value: PropTypes.string }),
   }),
   title: PropTypes.string,
   themeProps: PropTypes.shape({
@@ -76,6 +80,7 @@ ThemeLineDisplay.defaultProps = {
     'colors.secondary': { value: '#ffffff' },
     'colors.highlight1': { value: '#4a86e8' },
     'sizes.text': { type: 'text' },
+    'colors.primary': { value: '#000000' },
   },
   title: '',
   themeProps: {
