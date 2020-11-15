@@ -54,6 +54,11 @@ describe('Tests on isThemeValueValid function', () => {
     expect(isValueValid).toBe(true);
   });
 
+  it('should return false when value is empty is number for type em', () => {
+    const isValueValid = isThemeValueValid('', 'em', {});
+    expect(isValueValid).toBe(false);
+  });
+
   it('should return false on value a string when number is required on type px', () => {
     const isValueValid = isThemeValueValid('abcd', 'px', {});
     expect(isValueValid).toBe(false);
@@ -127,5 +132,10 @@ describe('Tests on isThemeValueValid function', () => {
     };
     const isValueValid = isThemeValueValid('{colors.highlight2}', 'text', theme);
     expect(isValueValid).toBe(false);
+  });
+
+  it('should return true on any random text that does not contain a variable', () => {
+    const isValueValid = isThemeValueValid('randooom', 'text', {});
+    expect(isValueValid).toBe(true);
   });
 });

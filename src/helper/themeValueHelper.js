@@ -35,26 +35,35 @@ export function getTransformedValue (themeProps, theme) {
 }
 
 export function isThemeValueValid (value, type, theme) {
-  let isValueValid = false;
-  if ((type === 'px' || type === 'em') && typeof value === 'number') {
-    return true;
-  }
-
-  if (type === 'color') {
-      var s = new Option().style;
-      s.color = value;
-      return s.color !== '';
-  }
-
-  if (type === 'text') {
-    const variableRegEx = /{(\w+)\.(\w+)}/g;
-    const variableNames = value.match(variableRegEx);
-    if (variableNames && variableNames.length > 0) {
-      return !doesValueCauseLoopOrContainsUnvalidVariables(value, theme);
+  try {
+    if (!value) return false;
+    let isValueValid = false;
+    // Check if for types px and em, the value is a number
+    if ((type === 'px' || type === 'em') && !isNaN(value)) {
+      return true;
     }
-  }
 
-  return isValueValid;
+    if (type === 'color') {
+        var s = new Option().style;
+        s.color = value;
+        return s.color !== '';
+    }
+
+    if (type === 'text') {
+      const variableRegEx = /{(\w+)\.(\w+)}/g;
+      const variableNames = value.match(variableRegEx);
+      if (variableNames && variableNames.length > 0) {
+        return !doesValueCauseLoopOrContainsUnvalidVariables(value, theme);
+      } else {
+        // It does not contain any variables
+        return true;
+      }
+    }
+
+    return isValueValid;
+  } catch (e) {
+    return false;
+  }
 }
 
 function doesValueCauseLoopOrContainsUnvalidVariables (value, theme) {

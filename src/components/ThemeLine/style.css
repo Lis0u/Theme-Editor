@@ -57,3 +57,8 @@
 #app-container .theme-line-form-row {
   padding: 5px 0px;
 }
+
+#app-container .error-line {
+  color: #f55;
+  padding: 2px 15px;
+}

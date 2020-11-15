@@ -5,11 +5,12 @@ import store from '../../store';
 import { connect } from 'react-redux';
 import './style.css';
 import { getTransformedValue, isThemeValueValid } from '../../helper/themeValueHelper';
+import ErrorLine from './ErrorLine';
 
 const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
   const [value, setValue] = useState(themeProps.value);
   const [radioValue, setRadioValue] = useState(themeProps.type);
-  const [isInputValid, setIsInputValid] = useState(true);
+  const [isValueValid, setIsValueValid] = useState(true);
 
   const typeToDisplay = themeProps.type === 'em' || themeProps.type === 'px'
     ? ` (${themeProps.type})` : '';
@@ -42,6 +43,7 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
               </Button>
             </Grid.Column>
           </Grid.Row>
+          <ErrorLine value={value} type={radioValue} isValueValid={isValueValid} setIsValueValid={setIsValueValid} />
           <Grid.Row className="theme-line-form-row">
             <Grid.Column computer={2}>
               Value:
@@ -50,7 +52,7 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
               <Input
                 className="theme-line-value-input"
                 data-testid="theme-line-value-input"
-                error={!isInputValid}
+                error={!isValueValid}
                 value={value}
                 min={radioValue === 'em' ? 0.1 : radioValue === 'px' ? 1 : ''}
                 type={radioValue === 'text' || radioValue === 'color' ? 'text' : 'number'}
@@ -148,9 +150,6 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
       nextTheme[variableName].type = radioValue;
       store.dispatch({ type: 'UPDATE_THEME', theme: nextTheme });
       setEditMode(false);
-    } else {
-      // error hanlder
-      setIsInputValid(false);
     }
   }
 };

@@ -21,7 +21,8 @@ function App ({ theme }) {
       id="app-container"
       style={{
         color: getTransformedValue(theme['colors.primary'], theme),
-        borderWidth: getTransformedValue(theme['sizes.borderWidth'], theme) + theme['sizes.borderWidth'].type
+        borderWidth: getTransformedValue(theme['sizes.borderWidth'], theme) + theme['sizes.borderWidth'].type,
+        backgroundColor: getTransformedValue(theme['colors.secondaryBackground'], theme)
       }}
     >
       <h1
@@ -55,6 +56,7 @@ function App ({ theme }) {
 App.propTypes = {
   theme: PropTypes.shape({
     'colors.primary': PropTypes.shape({ value: PropTypes.string }),
+    'colors.secondaryBackground': PropTypes.shape({ value: PropTypes.string }),
     'sizes.h1': PropTypes.shape({ type: PropTypes.string }),
     'sizes.borderWidth': PropTypes.shape({ type: PropTypes.string })
   }),
@@ -63,6 +65,7 @@ App.propTypes = {
 App.defaultProps = {
   theme: {
     'colors.primary': { value: '#000000' },
+    'colors.secondaryBackground': { value: '#FFFFFF' },
     'sizes.borderWidth': { value: '', type: 'em' },
     'sizes.h1': { value: '', type: 'em' },
   },
