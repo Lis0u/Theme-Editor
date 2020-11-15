@@ -4,7 +4,7 @@ import { Accordion, Icon } from 'semantic-ui-react';
 import ThemeLine from '../ThemeLine/ThemeLine';
 import { connect } from 'react-redux';
 import './style.css';
-import { getTransformedValue } from '../../helper/themeValueGetter';
+import { getTransformedValue } from '../../helper/themeValueHelper';
 
 const SimpleAccordion = ({ title, index, themeLines, theme }) => {
   const [activeIndex, setActiveIndex] = useState([0, 1]);
@@ -13,6 +13,8 @@ const SimpleAccordion = ({ title, index, themeLines, theme }) => {
     <Accordion fluid style={{ width: '100%' }}>
       <Accordion.Title
         active={activeIndex === index}
+        className="accordion-title"
+        data-testid="accordion-title"
         index={index}
         onClick={() => handleClick()}
         style={{

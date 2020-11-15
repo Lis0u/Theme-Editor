@@ -4,11 +4,12 @@ import { Button, Grid, Card, Input, Radio } from 'semantic-ui-react';
 import store from '../../store';
 import { connect } from 'react-redux';
 import './style.css';
-import { getTransformedValue } from '../../helper/themeValueGetter';
+import { getTransformedValue, isThemeValueValid } from '../../helper/themeValueHelper';
 
 const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
   const [value, setValue] = useState(themeProps.value);
   const [radioValue, setRadioValue] = useState(themeProps.type);
+  const [isInputValid, setIsInputValid] = useState(true);
 
   const typeToDisplay = themeProps.type === 'em' || themeProps.type === 'px'
     ? ` (${themeProps.type})` : '';
@@ -49,6 +50,7 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
               <Input
                 className="theme-line-value-input"
                 data-testid="theme-line-value-input"
+                error={!isInputValid}
                 value={value}
                 min={radioValue === 'em' ? 0.1 : radioValue === 'px' ? 1 : ''}
                 type={radioValue === 'text' || radioValue === 'color' ? 'text' : 'number'}
@@ -141,10 +143,15 @@ const ThemeLine = ({ title, variableName, setEditMode, theme, themeProps }) => {
 
   function handleSave () {
     const nextTheme = { ...theme };
-    nextTheme[variableName].value = value;
-    nextTheme[variableName].type = radioValue;
-    store.dispatch({ type: 'UPDATE_THEME', theme: nextTheme });
-    setEditMode(false);
+    if (isThemeValueValid(value, radioValue, theme)) {
+      nextTheme[variableName].value = value;
+      nextTheme[variableName].type = radioValue;
+      store.dispatch({ type: 'UPDATE_THEME', theme: nextTheme });
+      setEditMode(false);
+    } else {
+      // error hanlder
+      setIsInputValid(false);
+    }
   }
 };
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import './style.css';
-import { getTransformedValue } from '../../helper/themeValueGetter';
+import { getTransformedValue } from '../../helper/themeValueHelper';
 
 const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme }) => {
   const transformedValue = getTransformedValue(themeProps, theme);
@@ -45,8 +45,9 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
   }
 
   function handleColorInfoRenderer () {
-    const colorRegex = /#[0-9A-Fa-f]{6}/gi;
-    if (transformedValue && transformedValue.toString().match(colorRegex)) {
+    const style = new Option().style;
+    style.color = transformedValue;
+    if (style.color !== '') {
       return (
         <svg width="15" height="15">
           <rect width="15" height="15" ry="5" className="color-info-rect" style={{ fill: transformedValue }} />

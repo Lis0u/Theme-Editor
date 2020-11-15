@@ -43,7 +43,23 @@ describe('Basic tests on render', () => {
       <Provider store={store}>
         <ThemeLineDisplay
           themeProps={{ value: '#ffffff', type: 'color' }}
-          variableName="color.primary"
+          variableName="colors.primary"
+        />
+      </Provider>
+    );
+  });
+
+  it('should render with a px themeProps', () => {
+    const store = mockStore({
+      theme: {
+        'sizes.text': { value: 15, type: 'px' },
+      }
+    });
+    render(
+      <Provider store={store}>
+        <ThemeLineDisplay
+          themeProps={{ value: 15, type: 'px' }}
+          variableName="sizes.text"
         />
       </Provider>
     );
@@ -62,7 +78,7 @@ describe('Test on setEditMode function', () => {
       <Provider store={store}>
         <ThemeLineDisplay
           themeProps={{ value: '#ffffff', type: 'color' }}
-          variableName="color.primary"
+          variableName="colors.primary"
         />
       </Provider>
     );
@@ -85,7 +101,7 @@ describe('Tests on themeLine style on hover', () => {
       <Provider store={store}>
         <ThemeLineDisplay
           themeProps={{ value: '#ffffff', type: 'color' }}
-          variableName="color.primary"
+          variableName="colors.primary"
         />
       </Provider>
     );
@@ -103,5 +119,38 @@ describe('Tests on themeLine style on hover', () => {
     expect(style.color).toBe('rgb(171, 69, 171)');
   });
 
+  it('should color to colors.primary when leaving hover state', () => {
+    const store = mockStore({
+      theme: {
+        'colors.primary': { value: '#000000', type: 'color' },
+        'sizes.text': { value: 1.1, type: 'em' },
+        'colors.highlight1': { value: '#AB45AB', type: 'color' },
+      }
+    });
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeLineDisplay
+          themeProps={{ value: '#ffffff', type: 'color' }}
+          variableName="color.primary"
+        />
+      </Provider>
+    );
 
+    let themeLineButton = document.getElementsByClassName('invisible-button');
+    let style = window.getComputedStyle(themeLineButton[0]);
+    expect(style['font-size']).toBe('1.1em');
+    expect(style.color).toBe('rgb(0, 0, 0)');
+
+    const themeLine = getByTestId(container, 'theme-line-button');
+    fireEvent.mouseEnter(themeLine);
+
+    themeLineButton = document.getElementsByClassName('invisible-button');
+    style = window.getComputedStyle(themeLineButton[0]);
+    expect(style.color).toBe('rgb(171, 69, 171)');
+
+    fireEvent.mouseLeave(themeLine);
+    themeLineButton = document.getElementsByClassName('invisible-button');
+    style = window.getComputedStyle(themeLineButton[0]);
+    expect(style.color).toBe('rgb(0, 0, 0)');
+  })
 });

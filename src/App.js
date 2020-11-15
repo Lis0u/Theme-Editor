@@ -4,7 +4,7 @@ import './App.css';
 import SimpleAccordion from './components/Accordion/SimpleAccordion';
 import { themeValues } from './helper/themeValues';
 import SaveButton from './components/Button/SaveButton';
-import { getTransformedValue } from './helper/themeValueGetter';
+import { getTransformedValue } from './helper/themeValueHelper';
 import { connect } from 'react-redux';
 import store from './store';
 

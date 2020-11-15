@@ -4,13 +4,24 @@ This project aims to manage the theme colors, sizes, and many other UI propertie
 
 ## Assumptions
 
+### page overview
+- Arriving on the page, there should be a title on the top, four closed accordions, as well as a Save button on the bottom.
+- The default theme is as follows:
+// Detail default theme
+- localStorage is empty, until the Save button is hit.
+
 ### colors
-- Colors are assumed to be in a hexadecimal form (either with 3 (#333) or 6 (#333333) digits).
+- Colors are assumed to be in any valid CSS form, including:
+  - Hexadecimal with 6 digits #000000
+  - Hexadecimal with 3 digits #333
+  - RGB format rgb(255, 141, 78)
+  - RGBA format rgba(1, 255, 255, 0.5)
+  - CSS color string like "red", "green", "black", etc.
 
 ### em, px
 - All properties of type `px` or `em` cannot be 0 nor negative.
   - The smallest possible value for a property of type `em` is `0.1`.
-  - The smallest possible value for a property of type `px` is `1`.
+  - The smallest possible value for a property of type `px` is `0.1`.
 
 ### text
 - Properties of type `text` can contain other properties values contained between brackets, like `{colors.primay}`.
