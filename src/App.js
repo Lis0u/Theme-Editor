@@ -4,7 +4,7 @@ import './App.css';
 import SimpleAccordion from './components/Accordion/SimpleAccordion';
 import { themeValues } from './helper/themeValues';
 import SaveButton from './components/Button/SaveButton';
-import { getTransformedValue } from './helper/themeValueHelper';
+import { getTransformedValue, getTransformedValueWithType } from './helper/themeValueHelper';
 import { connect } from 'react-redux';
 import store from './store';
 
@@ -21,13 +21,13 @@ function App ({ theme }) {
       id="app-container"
       style={{
         color: getTransformedValue(theme['colors.primary'], theme),
-        borderWidth: getTransformedValue(theme['sizes.borderWidth'], theme) + theme['sizes.borderWidth'].type,
+        borderWidth: getTransformedValueWithType(theme['sizes.borderWidth'], theme),
         backgroundColor: getTransformedValue(theme['colors.secondaryBackground'], theme)
       }}
     >
       <h1
         id="app-title"
-        style={{ fontSize: getTransformedValue(theme['sizes.h1'], theme) + theme['sizes.h1'].type }}
+        style={{ fontSize: getTransformedValueWithType(theme['sizes.h1'], theme)}}
       >
         simple theme editor
       </h1>

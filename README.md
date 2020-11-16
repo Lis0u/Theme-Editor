@@ -11,12 +11,15 @@ This project aims to manage the theme colors, sizes, and many other UI propertie
 - localStorage is empty, until the Save button is hit.
 
 ### colors
-- Colors are assumed to be in any valid CSS form, including:
+- Colors are assumed to be in any valid color CSS form, including:
   - Hexadecimal with 6 digits #000000
   - Hexadecimal with 3 digits #333
   - RGB format rgb(255, 141, 78)
   - RGBA format rgba(1, 255, 255, 0.5)
   - CSS color string like "red", "green", "black", etc.
+
+All properties refering to a color are assumed to be equivalent to the css property `color`.
+Thus, to see if a color value is valid, it will assigned to the css property `color`. If the result is an empty string `''`, it means that the value is not valid. Otherwise, it is.
 
 ### em, px
 - All properties of type `px` or `em` cannot be 0 nor negative.
@@ -25,6 +28,10 @@ This project aims to manage the theme colors, sizes, and many other UI propertie
 
 ### text
 - Properties of type `text` can contain other properties values contained between brackets, like `{colors.primay}`.
+
+### text sizes
+
+All text sizes are assumed to be equivalent to the css property `font-size`.
 
 # Getting Started with Create React App
 

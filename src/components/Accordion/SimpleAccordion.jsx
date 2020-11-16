@@ -45,7 +45,10 @@ const SimpleAccordion = ({ title, index, themeLines, theme }) => {
         <ThemeLine
           key={themeLine.variableName}
           title={themeLine.title}
+          defaultValue={themeLine.defaultValue}
           themeProps={theme[themeLine.variableName]}
+          equivalentCssProperty={themeLine.equivalentCssProperty}
+          themeLine={themeLine}
           variableName={themeLine.variableName}
         />,
       );

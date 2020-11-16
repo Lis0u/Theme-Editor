@@ -38,10 +38,13 @@
 
 .theme-line-value-input {
   width: 100%;
+  border-radius: 5px;
 }
 
 #app-container .ui.input > input {
   padding: 5px 10px;
+  color: inherit;
+  background-color: inherit;
 }
 
 .theme-line-radio-button {

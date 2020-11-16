@@ -40,67 +40,68 @@ describe('Tests on getTransformedValue function', () => {
 
 describe('Tests on isThemeValueValid function', () => {
   it('should return false on empty value', () => {
-    const isValueValid = isThemeValueValid('', '', {});
+    const isValueValid = isThemeValueValid('', '', {}, '');
     expect(isValueValid).toBe(false);
   });
 
   it('should return false on value a string when number is required on type em', () => {
-    const isValueValid = isThemeValueValid('abcd', 'em', {});
+    const isValueValid = isThemeValueValid('abcd', 'em', {}, 'fontSize');
     expect(isValueValid).toBe(false);
   });
 
   it('should return true when value is number for type em', () => {
-    const isValueValid = isThemeValueValid(1.2, 'em', {});
+    const isValueValid = isThemeValueValid(1.2, 'em', {}, 'fontSize');
     expect(isValueValid).toBe(true);
   });
 
   it('should return false when value is empty is number for type em', () => {
-    const isValueValid = isThemeValueValid('', 'em', {});
+    const isValueValid = isThemeValueValid('', 'em', {}, 'fontSize');
     expect(isValueValid).toBe(false);
   });
 
   it('should return false on value a string when number is required on type px', () => {
-    const isValueValid = isThemeValueValid('abcd', 'px', {});
+    const isValueValid = isThemeValueValid('abcd', 'px', {},'fontSize');
     expect(isValueValid).toBe(false);
   });
 
   it('should return true when value is number for type px', () => {
-    const isValueValid = isThemeValueValid(1, 'px', {});
+    const isValueValid = isThemeValueValid(1, 'px', {}, 'fontSize');
     expect(isValueValid).toBe(true);
   });
 
   it('should return false on a string value that is not a color with type color', () => {
-    const isValueValid = isThemeValueValid('abcd', 'color', {});
+    const isValueValid = isThemeValueValid('abcd', 'color', {}, 'color');
     expect(isValueValid).toBe(false);
   });
 
   it('should return true on hex value of type color', () => {
-    const isValueValid = isThemeValueValid('#000000', 'color', {});
+    const isValueValid = isThemeValueValid('#000000', 'color', {}, 'color');
     expect(isValueValid).toBe(true);
   });
 
   it('should return true on hex value of type color', () => {
-    const isValueValid = isThemeValueValid('#333', 'color', {});
+    const isValueValid = isThemeValueValid('#333', 'color', {}, 'color');
     expect(isValueValid).toBe(true);
   });
 
   it('should return true on rgb value of type color', () => {
-    const isValueValid = isThemeValueValid('rgb(0, 0, 0)', 'color', {});
+    const isValueValid = isThemeValueValid('rgb(0, 0, 0)', 'color', {}, 'color');
     expect(isValueValid).toBe(true);
   });
 
   it('should return true on color value of type color', () => {
-    const isValueValid = isThemeValueValid('red', 'color', {});
+    const isValueValid = isThemeValueValid('red', 'color', {}, 'color');
     expect(isValueValid).toBe(true);
   });
 
   it('should return true on existing var in theme on a value of type text', () => {
-    const isValueValid = isThemeValueValid('{sizes.text}', 'text', { 'sizes.text': { value: 1.1, type: 'em' }});
+    const theme = { 'sizes.text': { value: 1.1, type: 'em' }};
+    const isValueValid = isThemeValueValid('{sizes.text}', 'text', theme, 'fontSize');
     expect(isValueValid).toBe(true);
   })
 
   it('should return false on non existing var in theme in value of type text', () => {
-    const isValueValid = isThemeValueValid('{ab.cd}', 'text', {});
+    const isValueValid = isThemeValueValid('{ab.cd}', 'text', {}, 'fontSize');
     expect(isValueValid).toBe(false);
   });
 
@@ -110,7 +111,7 @@ describe('Tests on isThemeValueValid function', () => {
       'colors.highlight2': { value: '{colors.highlight1}', type: 'text' },
       'colors.highlight3': { value: '{colors.highlight2}', type: 'text' },
     };
-    const isValueValid = isThemeValueValid('{colors.highlight2}', 'text', theme);
+    const isValueValid = isThemeValueValid('{colors.highlight2}', 'text', theme, 'color');
     expect(isValueValid).toBe(true);
   });
 
@@ -120,7 +121,7 @@ describe('Tests on isThemeValueValid function', () => {
       'colors.highlight2': { value: '{colors.highlight1}', type: 'text' },
       'colors.highlight3': { value: '{colors.highlight2}', type: 'text' },
     };
-    const isValueValid = isThemeValueValid('{colors.highlight3}', 'text', theme);
+    const isValueValid = isThemeValueValid('{colors.highlight3}', 'text', theme, 'color');
     expect(isValueValid).toBe(true);
   });
 
@@ -130,12 +131,12 @@ describe('Tests on isThemeValueValid function', () => {
       'colors.highlight2': { value: '{colors.highlight1}', type: 'text' },
       'colors.highlight3': { value: '{colors.highlight2}', type: 'text' },
     };
-    const isValueValid = isThemeValueValid('{colors.highlight2}', 'text', theme);
+    const isValueValid = isThemeValueValid('{colors.highlight2}', 'text', theme, 'color');
     expect(isValueValid).toBe(false);
   });
 
-  it('should return true on any random text that does not contain a variable', () => {
-    const isValueValid = isThemeValueValid('randooom', 'text', {});
-    expect(isValueValid).toBe(true);
+  it('should return false on any random text that does not contain a variable', () => {
+    const isValueValid = isThemeValueValid('randooom', 'text', {}, 'color');
+    expect(isValueValid).toBe(false);
   });
 });

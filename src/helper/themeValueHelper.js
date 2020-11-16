@@ -27,6 +27,8 @@ export function getTransformedValue (themeProps, theme) {
           }
           visitedVariables.push(variableNameWithoutBrackets);
         }
+      } else {
+        break;
       }
     }
   }
@@ -34,17 +36,27 @@ export function getTransformedValue (themeProps, theme) {
   return finalValue;
 }
 
-export function isThemeValueValid (value, type, theme) {
+export function getTransformedValueWithType (themeProps, theme) {
+  let finalValue = getTransformedValue(themeProps, theme);
+  if (finalValue) {
+    finalValue += themeProps.type === 'px' ? 'px' : themeProps.type === 'em' ? 'em' : '';
+  }
+
+  return finalValue;
+}
+
+export function isThemeValueValid (value, type, theme, equivalentCssProperty) {
   try {
     if (!value) return false;
     let isValueValid = false;
-    // Check if for types px and em, the value is a number
+
+    // Check for types px and em if the value is a number
     if ((type === 'px' || type === 'em') && !isNaN(value)) {
-      return true;
+      isValueValid = true;
     }
 
     if (type === 'color') {
-        var s = new Option().style;
+        const s = new Option().style;
         s.color = value;
         return s.color !== '';
     }
@@ -56,9 +68,15 @@ export function isThemeValueValid (value, type, theme) {
         return !doesValueCauseLoopOrContainsUnvalidVariables(value, theme);
       } else {
         // It does not contain any variables
-        return true;
+        isValueValid = true;
       }
     }
+
+    // check that value fits the equivalent cssPropperty for any types
+    const style = new Option().style;
+    const unity = type === 'px' ? 'px' : type === 'em' ? 'em' : '';
+    style[equivalentCssProperty] = value + unity;
+    isValueValid = style[equivalentCssProperty] !== '';
 
     return isValueValid;
   } catch (e) {
@@ -99,7 +117,7 @@ function doesValueCauseLoopOrContainsUnvalidVariables (value, theme) {
       }
     } else {
       // value does not contain a variable, meaning that there is no loop
-      return false;
+      break;
     }
   }
   // check if final value is either a text value or contains variables

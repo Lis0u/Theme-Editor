@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import './style.css';
-import { getTransformedValue } from '../../helper/themeValueHelper';
+import { getTransformedValue, getTransformedValueWithType } from '../../helper/themeValueHelper';
 
 const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme }) => {
   const transformedValue = getTransformedValue(themeProps, theme);
@@ -20,7 +20,7 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
         color: isLineHovered
           ? getTransformedValue(theme['colors.highlight1'], theme)
           : getTransformedValue(theme['colors.primary'], theme),
-        fontSize: getTransformedValue(theme['sizes.text'], theme) + theme['sizes.text'].type
+        fontSize: getTransformedValueWithType(theme['sizes.text'], theme)
       }}
       onMouseEnter={() => setIsLineHovered(true)}
       onMouseLeave={() => setIsLineHovered(false)}

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Icon } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { getTransformedValue, isThemeValueValid } from '../../helper/themeValueHelper';
+import { isThemeValueValid, getTransformedValueWithType } from '../../helper/themeValueHelper';
 
 const INACTIVE_USER_TIME_THRESHOLD = 300; // 300ms
 
-const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid }) => {
+const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid, equivalentCssProperty }) => {
   let [userActivityTimeout, setUserActivityTimeout] = useState(null);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid }) => {
   }
 
   function inactiveUserAction () {
-    const result = isThemeValueValid(value, type, theme);
+    const result = isThemeValueValid(value, type, theme, equivalentCssProperty);
     setIsValueValid(result);
   }
 
@@ -33,13 +33,15 @@ const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid }) => {
         <Grid.Row
           className="error-line"
           style={{
-            fontSize: getTransformedValue(theme['sizes.text'], theme) + theme['sizes.text'].type,
+            fontSize: getTransformedValueWithType(theme['sizes.text'], theme),
           }}
         >
           <Grid.Column computer={2} />
           <Grid.Column computer={14}>
-            <Icon name="warning sign" />
-            <p>The value {value} of type {type} is not valid!</p>
+            <div style={{ display: 'inline-flex'}}>
+              <Icon name="warning sign" />
+              <p>The value {value} of type {type} is not valid!</p>
+            </div>
           </Grid.Column>
         </Grid.Row>
       )
@@ -47,6 +49,7 @@ const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid }) => {
 };
 
 ErrorLine.propTypes = {
+  equivalentCssProperty: PropTypes.string,
   isValueValid: PropTypes.bool,
   setIsValueValid: PropTypes.func,
   theme: PropTypes.shape({
@@ -60,6 +63,7 @@ ErrorLine.propTypes = {
 };
 
 ErrorLine.defaultProps = {
+  equivalentCssProperty: 'fontSize',
   isValueValid: true,
   setIsValueValid: () => {},
   theme: {
