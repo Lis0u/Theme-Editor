@@ -14,7 +14,7 @@ export function getTransformedValue (themeProps, theme) {
           const name = variableNames[i];
           const variableNameWithoutBrackets = name.substring(
             name.lastIndexOf('{') + 1,
-            name.lastIndexOf('}')
+            name.lastIndexOf('}'),
           );
 
           if (visitedVariables.includes(variableNameWithoutBrackets)) {
@@ -36,55 +36,56 @@ export function getTransformedValue (themeProps, theme) {
   return finalValue;
 }
 
-export function getTransformedValueWithType (themeProps, theme) {
-  let finalValue = getTransformedValue(themeProps, theme);
-  if (finalValue) {
-    finalValue += themeProps.type === 'px' ? 'px' : themeProps.type === 'em' ? 'em' : '';
+export function isThemeValueValid (value, type, theme, equivalentCssProperty, variableName) {
+  const errors = [];
+  let isValueValid = false;
+  if (!value) {
+    errors.push('The value cannot be empty.');
+    return { isValueValid: false, errors };
   }
 
-  return finalValue;
-}
+  // Check for types px and em if the value is a number
+  if ((type === 'px' || type === 'em') && !isNaN(value)) {
+    isValueValid = true;
+  }
 
-export function isThemeValueValid (value, type, theme, equivalentCssProperty) {
-  try {
-    if (!value) return false;
-    let isValueValid = false;
+  if (type === 'color') {
+      const s = new Option().style;
+      s.color = value;
+      if (s.color === '') {
+        errors.push(`"${value}" is not a valid color value.`);
+      }
+      return { isValueValid: s.color !== '', errors };
+  }
 
-    // Check for types px and em if the value is a number
-    if ((type === 'px' || type === 'em') && !isNaN(value)) {
+  if (type === 'text') {
+    const variableRegEx = /{(\w+)\.(\w+)}/g;
+    const variableNames = value.match(variableRegEx);
+    if (variableNames && variableNames.length > 0) {
+      const doesValueLoopOrUnvalid = doesValueCauseLoopOrContainsUnvalidVariables(value, theme, variableName);
+      if (doesValueLoopOrUnvalid) {
+        errors.push('Your value causes a loop, or does not exist.');
+      }
+      return { isValueValid: !doesValueLoopOrUnvalid, errors};
+    } else {
+      // It does not contain any variables
       isValueValid = true;
     }
-
-    if (type === 'color') {
-        const s = new Option().style;
-        s.color = value;
-        return s.color !== '';
-    }
-
-    if (type === 'text') {
-      const variableRegEx = /{(\w+)\.(\w+)}/g;
-      const variableNames = value.match(variableRegEx);
-      if (variableNames && variableNames.length > 0) {
-        return !doesValueCauseLoopOrContainsUnvalidVariables(value, theme);
-      } else {
-        // It does not contain any variables
-        isValueValid = true;
-      }
-    }
-
-    // check that value fits the equivalent cssPropperty for any types
-    const style = new Option().style;
-    const unity = type === 'px' ? 'px' : type === 'em' ? 'em' : '';
-    style[equivalentCssProperty] = value + unity;
-    isValueValid = style[equivalentCssProperty] !== '';
-
-    return isValueValid;
-  } catch (e) {
-    return false;
   }
+
+  // check that value fits the equivalent cssPropperty for any types
+  const style = new Option().style;
+  const unity = type === 'px' ? 'px' : type === 'em' ? 'em' : '';
+  style[equivalentCssProperty] = value + unity;
+  if (style[equivalentCssProperty] === '') {
+    errors.push(`"${value}" is not a valid ${equivalentCssProperty} value`);
+  }
+  isValueValid = style[equivalentCssProperty] !== '';
+
+  return { isValueValid, errors };
 }
 
-function doesValueCauseLoopOrContainsUnvalidVariables (value, theme) {
+function doesValueCauseLoopOrContainsUnvalidVariables (value, theme, variableName) {
   // Array to store all values containing variables
   const results = [];
 
@@ -112,7 +113,7 @@ function doesValueCauseLoopOrContainsUnvalidVariables (value, theme) {
   
         finalValue = finalValue.replace(
           name,
-          theme[variableNameWithoutBrackets].value
+          variableNameWithoutBrackets === variableName ? value : theme[variableNameWithoutBrackets].value
         );
       }
     } else {

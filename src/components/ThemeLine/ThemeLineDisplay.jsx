@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import './style.css';
-import { getTransformedValue, getTransformedValueWithType } from '../../helper/themeValueHelper';
+import { getTransformedValue } from '../../helper/themeValueHelper';
 
 const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme }) => {
   const transformedValue = getTransformedValue(themeProps, theme);
-  const [isLineHovered, setIsLineHovered] = useState(false);
 
   const typeToDisplay = themeProps.type === 'em' || themeProps.type === 'px'
     ? ` (${themeProps.type})` : '';
@@ -16,14 +15,6 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
       className="invisible-button"
       data-testid="theme-line-button"
       onClick={() => handleClick()}
-      style={{
-        color: isLineHovered
-          ? getTransformedValue(theme['colors.highlight1'], theme)
-          : getTransformedValue(theme['colors.primary'], theme),
-        fontSize: getTransformedValueWithType(theme['sizes.text'], theme)
-      }}
-      onMouseEnter={() => setIsLineHovered(true)}
-      onMouseLeave={() => setIsLineHovered(false)}
     >
       <Grid>
         <Grid.Row className="theme-line-display-row">
@@ -60,12 +51,7 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
 
 ThemeLineDisplay.propTypes = {
   setEditMode: PropTypes.func,
-  theme: PropTypes.shape({
-    'colors.secondary': PropTypes.shape({ value: PropTypes.string }),
-    'colors.highlight1': PropTypes.shape({ value: PropTypes.string }),
-    'sizes.text': PropTypes.shape({ type: PropTypes.string }),
-    'colors.primary': PropTypes.shape({ value: PropTypes.string }),
-  }),
+  theme: PropTypes.shape({}),
   title: PropTypes.string,
   themeProps: PropTypes.shape({
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -77,12 +63,7 @@ ThemeLineDisplay.propTypes = {
 
 ThemeLineDisplay.defaultProps = {
   setEditMode: () => {},
-  theme: {
-    'colors.secondary': { value: '#ffffff' },
-    'colors.highlight1': { value: '#4a86e8' },
-    'sizes.text': { type: 'text' },
-    'colors.primary': { value: '#000000' },
-  },
+  theme: {},
   title: '',
   themeProps: {
     value: '',

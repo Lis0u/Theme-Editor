@@ -30,6 +30,7 @@
   width: 100%;
   background-color: #EEEEEE;
   padding: 5px;
+  margin: 0px;
 }
 
 #app-container .theme-line-card .theme-line-title {
@@ -44,7 +45,6 @@
 #app-container .ui.input > input {
   padding: 5px 10px;
   color: inherit;
-  background-color: inherit;
 }
 
 .theme-line-radio-button {
@@ -55,6 +55,8 @@
   padding: 5px 15px;
   border-radius: 2px;
   font-weight: normal;
+  color: #ffffff;
+  background-color: #4e86e8;
 }
 
 #app-container .theme-line-form-row {

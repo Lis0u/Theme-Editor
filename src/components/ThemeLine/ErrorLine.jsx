@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Icon } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { isThemeValueValid, getTransformedValueWithType } from '../../helper/themeValueHelper';
+import { isThemeValueValid } from '../../helper/themeValueHelper';
 
 const INACTIVE_USER_TIME_THRESHOLD = 300; // 300ms
 
-const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid, equivalentCssProperty }) => {
+const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid, equivalentCssProperty, variableName }) => {
   let [userActivityTimeout, setUserActivityTimeout] = useState(null);
+  const [errors, setErrors] = useState(['The value is not valid!']);
 
   useEffect(() => {
     resetUserActivityTimeout();
@@ -22,25 +23,21 @@ const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid, equivale
   }
 
   function inactiveUserAction () {
-    const result = isThemeValueValid(value, type, theme, equivalentCssProperty);
-    setIsValueValid(result);
+    const result = isThemeValueValid(value, type, theme, equivalentCssProperty, variableName);
+    setIsValueValid(result.isValueValid);
+    setErrors(result.errors);
   }
 
   return (
     isValueValid
       ? ''
       : (
-        <Grid.Row
-          className="error-line"
-          style={{
-            fontSize: getTransformedValueWithType(theme['sizes.text'], theme),
-          }}
-        >
+        <Grid.Row className="error-line">
           <Grid.Column computer={2} />
           <Grid.Column computer={14}>
             <div style={{ display: 'inline-flex'}}>
               <Icon name="warning sign" />
-              <p>The value {value} of type {type} is not valid!</p>
+              <p>{errors[0]}</p>
             </div>
           </Grid.Column>
         </Grid.Row>
@@ -52,25 +49,20 @@ ErrorLine.propTypes = {
   equivalentCssProperty: PropTypes.string,
   isValueValid: PropTypes.bool,
   setIsValueValid: PropTypes.func,
-  theme: PropTypes.shape({
-    'sizes.text': PropTypes.shape({
-      value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-      type: PropTypes.string,
-    }),
-  }),
+  theme: PropTypes.shape({}),
   type: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  variableName: PropTypes.string,
 };
 
 ErrorLine.defaultProps = {
   equivalentCssProperty: 'fontSize',
   isValueValid: true,
   setIsValueValid: () => {},
-  theme: {
-    'sizes.text': { value: 1, type: 'em' },
-  },
+  theme: {},
   type: 'text',
   value: '',
+  variableName: '',
 }
 
 const mapStateToProps = (state) => {

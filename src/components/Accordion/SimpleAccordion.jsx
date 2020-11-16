@@ -4,7 +4,6 @@ import { Accordion, Icon } from 'semantic-ui-react';
 import ThemeLine from '../ThemeLine/ThemeLine';
 import { connect } from 'react-redux';
 import './style.css';
-import { getTransformedValue } from '../../helper/themeValueHelper';
 
 const SimpleAccordion = ({ title, index, themeLines, theme }) => {
   const [activeIndex, setActiveIndex] = useState([0, 1]);
@@ -17,9 +16,6 @@ const SimpleAccordion = ({ title, index, themeLines, theme }) => {
         data-testid="accordion-title"
         index={index}
         onClick={() => handleClick()}
-        style={{
-          color: getTransformedValue(theme['colors.primary'], theme),
-        }}
       >
       <Icon name='dropdown' />
         {title}
@@ -61,10 +57,7 @@ const SimpleAccordion = ({ title, index, themeLines, theme }) => {
 SimpleAccordion.propTypes = {
   title: PropTypes.string,
   index: PropTypes.number,
-  theme: PropTypes.shape({
-    'colors.primary': PropTypes.shape({}),
-    'sizes.h2': PropTypes.shape({ type: PropTypes.string }),
-  }),
+  theme: PropTypes.shape({}),
   themeLines: PropTypes.arrayOf(PropTypes.shape({})),
 };
 

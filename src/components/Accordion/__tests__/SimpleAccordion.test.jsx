@@ -43,22 +43,3 @@ describe('Basic tests on render & mount', () => {
     fireEvent.click(accordionTitle); // close
   });
 });
-
-describe('Tests on accordion style', () => {
-  it('should have colors.primary style on title', () => {
-    const store = mockStore({
-      theme: {
-        'colors.primary': { value: '#000000', type: 'color' },
-      }
-    });
-    render(
-      <Provider store={store}>
-        <SimpleAccordion />
-      </Provider>
-    );
-
-    let accordionTitle = document.getElementsByClassName('accordion-title');
-    let style = window.getComputedStyle(accordionTitle[0]);
-    expect(style.color).toBe('rgb(0, 0, 0)');
-  });
-});

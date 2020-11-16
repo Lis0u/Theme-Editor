@@ -3,18 +3,12 @@ import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import './style.css';
-import { getTransformedValueWithType } from '../../helper/themeValueHelper';
 
 const SaveButton = ({ theme }) => {
   return (
     <Button
       className="save-button"
       data-testid="save-button"
-      style={{
-        color: getTransformedValueWithType(theme['buttons.color'], theme),
-        backgroundColor: getTransformedValueWithType(theme['buttons.background'], theme),
-        fontSize: getTransformedValueWithType(theme['buttons.fontSize'], theme),
-      }}
       onClick={() => handleClick()}
     >
       Save
@@ -28,25 +22,11 @@ const SaveButton = ({ theme }) => {
 };
 
 SaveButton.propTypes = {
-  theme: PropTypes.shape({
-    'buttons.background': PropTypes.shape({
-      value: PropTypes.string,
-    }),
-    'buttons.color': PropTypes.shape({
-      value: PropTypes.string,
-    }),
-    'buttons.fontSize': PropTypes.shape({
-      value: PropTypes.string,
-    }),
-  }),
+  theme: PropTypes.shape({}),
 };
 
 SaveButton.defaultProps = {
-  theme: {
-    'buttons.background': { value: '#ffffff', type: 'color' },
-    'buttons.color': { value: '#4a86e8', type: 'color' },
-    'buttons.fontSize': { value: 'calc(1.1*1.2)', type: 'text' },
-  },
+  theme: {},
 };
 
 const mapStateToProps = (state) => {
