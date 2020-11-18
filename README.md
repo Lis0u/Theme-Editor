@@ -29,33 +29,32 @@ All values of type `px` or `em` must be a number. Values can be either positive,
 
 ### error handling
 Each UI theme presented in the page refers to an equivalent Css property.
-If the value given by the user does not comply with the equivalent css property, then the user will not be allowed to save his/herr changes. There are two visual effects to inform the user of his unvalid value=
-- the 'OK' button would be disabled
-- and an error message would appear just below the input to inform the user if the value non validity.
+If the value given by the user does not comply with the equivalent css property, then the user will not be allowed to save his/her changes. There are two visual effects to inform the user of his unvalid value:
+- the 'OK' button is disabled
+- and an error message is displaied just below the input to inform the user that the value is not valid.
 
 There are different ways to trigger an error message:
 - With the selected type to `text`:
-   - A given variable does not exist
-   - A given variable causes a loop; meaning that the given variable refers to, in the end, to the UI theme that the user is modifying.
-  - A given variable which final value does not comply with the equivalent css property. For example, if the equivalent css property is `color`, even though the variable `{sizes.text}` that refers to `1px` won't comply with the property `color`. Indeed, `color: 1px` is not a valid css assignment.
-  - A final value that does not comply with the equivalent css property
-  - A value that exceeds 500 characters
+  - A given variable does not exist
+  - A given variable causes a loop; meaning that the given variable refers to, in the end, to the UI theme that the user is modifying.
+  - A given variable whose final value does not comply with the current equivalent css property. For example, if the current equivalent css property is `color`, and the refered variable is of type `px`, it won't comply with the property `color`. Indeed, `color: 1px` is not a valid css assignment.
+  - A value that exceeds the length of 500 characters
 - With the selected type `em` or `px`:
   - The value that is not a number
   - A value that does not comply with the equivalent css property. (ex: if the equivalent css property is `color`, any value given with the `px` type won't comply anyway).
-  - A value that exceeds 500 characters
+  - A value that exceeds the length of 500 characters
   - A value that is not in the range [-33554400, -33554400]
 - With the selected type `color`:
-  - The value is not a color (valid colors are explained in the ### colors part)
+  - The value is not a color (valid colors are explained in the ### colors section)
   - The resulting color does not comply to the equivalent css property. (Same case a `px` and `em`, if the equivalent css property is `fontSize`, then a color won't comply anyway).
-  - A value that exceeds 500 characters
+  - A value that exceeds the length of 500 characters
 
 After 300ms of inactivity, the value validation process is triggered. If the value does not comply, then the error message will show, and the `OK` button gets disabled. Otherwise, the input stays as is, with the user's value.
 
 ### text
 Properties of type `text` can contain two types of values:
 - A final value to be directly used as (ex: `1px`)
-- A value containing one or many variables, which refer to other properties values, like `{colors.primay}`.
+- A value containing one or multiple variables, which refer to other properties values, like `{colors.primay}`.
 
 These variables, for display purpose, will be replaced by the value they are referring to.
 For example, if an input contains the following valid text (assuming that the variables exist, and refer to `1` and `#000000` respectively, and that the input is of type `border`):
@@ -66,6 +65,8 @@ A text is limited to 500 characters.
 ### text sizes
 
 All text sizes are assumed to be equivalent to the css property `font-size`.
+
+## Possible extensions
 
 ### alter theme from UI theme values
 
@@ -97,6 +98,32 @@ const unit = initialType === 'em' || initialType === 'px'
     ? ` ${initialType}` : '';
 <div style={{ fontSize: `${getTransformedValue(themeProps, theme, initialThemeProps)}${unit}` }}>
 ```
+
+### add more UI theme properties
+
+To add new theme properties, access the `src/helper/themeValues` file, and add another object in the `themeValues` list.
+Your object needs to follow the following norm:
+```js
+{
+  title: '<YOUR_SECTION_TITLE>',
+  themeProps: [
+    {
+      title: '<YOUR_PROPERTY_TITLE>',
+      defaultValue: '<YOUR_DEFAULT_VALUE>',
+      defaultType: '<YOUR_DEAULT_TYPE>',
+      variableName: '<YOUR_VARIABLE_NAME>',
+      equivalentCssProperty: '<YOUR_EQUIVALENT_CSS_PROPERTY>',
+    },
+  ],
+},
+```
+With:
+* <YOUR_SECTION_TITLE> _(string)_ - Title of your section in a string type (ex. 'General colors')
+* <YOUR_PROPERTY_TITLE> _(string)_ - Title of your property (ex. 'Primary font color')
+* <YOUR_DEFAULT_VALUE> _(string)_ - The default value of your property - :warning: It must be a valid one !
+* <YOUR_DEAULT_TYPE> _(string)_ - The default type of your property. The type can be either 'text', 'px', 'em' ot 'color'. No other type is valid !
+* <YOUR_VARIABLE_NAME> _(string)_ - The variable Name that refers to your property value - :warning: to space/tabs/whitespace allowed ! Otherwise, the variable reference won't work.
+* <YOUR_EQUIVALENT_CSS_PROPERTY> _(string)_ - The css property that it refers to. :warning: This css property should exist ! Check on [this website](https://www.w3schools.com/cssref/) to check its existence. Beware of translating it to an inline style type (ex: 'font-size' -> 'fontSize');
 
 # Getting Started with Create React App
 

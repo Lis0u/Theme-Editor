@@ -12,8 +12,7 @@ export function getTransformedValue (themeProps, theme, initialThemeProps) {
   }
 
   if (themeProps.type === 'text' && value) {
-    const variableRegEx = /{(\w+)\.(\w+)}/g;
-    const variableName = value.match(variableRegEx);
+    const variableName = initialThemeProps ? initialThemeProps.variableName : '';
     value = getFinalValueFromVariable(value, theme, variableName);
   }
 
@@ -105,9 +104,6 @@ function getFinalValueFromVariable (value, theme, variableName) {
 
         if (!theme[variableNameWithoutBrackets] || !theme[variableNameWithoutBrackets].value) {
           // Look in themeValues
-          if (!themeValues) {
-            return '';
-          }
           valueToReplace = getInitialThemeValue(variableNameWithoutBrackets);
         } else {
           valueToReplace = theme[variableNameWithoutBrackets].value
@@ -141,10 +137,6 @@ export function getInitialThemeValue (variableName) {
 
   const initialThemeValue = initialTheme.themeProps
     .find(props => props.variableName === variableName);
-  if (!initialThemeValue) {
-    // variable name does not exist!
-    return '';
-  }
 
   return initialThemeValue.defaultValue;
 }
