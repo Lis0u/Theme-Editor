@@ -1,39 +1,23 @@
-export function getTransformedValue (themeProps, theme) {
-  if (!themeProps) return '';
-  let finalValue = themeProps.value;
-  if (themeProps.type === 'text') {
-    const variableRegEx = /{(\w+)\.(\w+)}/g;
+import { themeValues } from './themeValues';
 
-    // If the extracted value is also a variable, then the extract process should go again
-    // unless variables call another, leading to infinite loop ! 
-    const visitedVariables = [];
-    while (finalValue && finalValue.match(variableRegEx)) {
-      const variableNames = finalValue.match(variableRegEx);
-      if (variableNames && variableNames.length > 0) {
-        for (let i = 0; i < variableNames.length; i++) {
-          const name = variableNames[i];
-          const variableNameWithoutBrackets = name.substring(
-            name.lastIndexOf('{') + 1,
-            name.lastIndexOf('}'),
-          );
-
-          if (visitedVariables.includes(variableNameWithoutBrackets)) {
-            break;
-          } else {
-            finalValue = finalValue.replace(
-              name,
-              theme[variableNameWithoutBrackets].value
-            );
-          }
-          visitedVariables.push(variableNameWithoutBrackets);
-        }
-      } else {
-        break;
-      }
+export function getTransformedValue (themeProps, theme, initialThemeProps) {
+  let value = '';
+  if (!themeProps || !themeProps.value) {
+    if (!initialThemeProps) return '';
+    else {
+      value = initialThemeProps.defaultValue;
     }
+  } else {
+    value = themeProps.value;
   }
 
-  return finalValue;
+  if (themeProps.type === 'text' && value) {
+    const variableRegEx = /{(\w+)\.(\w+)}/g;
+    const variableName = value.match(variableRegEx);
+    value = getFinalValueFromVariable(value, theme, variableName);
+  }
+
+  return value;
 }
 
 export function isThemeValueValid (value, type, theme, equivalentCssProperty, variableName) {
@@ -44,8 +28,18 @@ export function isThemeValueValid (value, type, theme, equivalentCssProperty, va
     return { isValueValid: false, errors };
   }
 
+  // Check for value's length
+  if (value.length > 500) {
+    errors.push('The value is too long, please remove characters so taht you value has below 500 characters.');
+    return  { isValueValid: false, errors };
+  }
+
   // Check for types px and em if the value is a number
   if ((type === 'px' || type === 'em') && !isNaN(value)) {
+    if (value > 33554400 || value < -33554400) {
+      errors.push('Your value does not respect the range [-33554400; 33554400]. Please update your number.');
+      return { isValueValid: false, errors }
+    }
     isValueValid = true;
   }
 
@@ -53,7 +47,7 @@ export function isThemeValueValid (value, type, theme, equivalentCssProperty, va
       const s = new Option().style;
       s.color = value;
       if (s.color === '') {
-        errors.push(`"${value}" is not a valid color value.`);
+        errors.push(`Your value is not a valid color value.`);
       }
       return { isValueValid: s.color !== '', errors };
   }
@@ -62,11 +56,11 @@ export function isThemeValueValid (value, type, theme, equivalentCssProperty, va
     const variableRegEx = /{(\w+)\.(\w+)}/g;
     const variableNames = value.match(variableRegEx);
     if (variableNames && variableNames.length > 0) {
-      const doesValueLoopOrUnvalid = doesValueCauseLoopOrContainsUnvalidVariables(value, theme, variableName);
-      if (doesValueLoopOrUnvalid) {
+      const finalValue = getFinalValueFromVariable(value, theme, variableName);
+      if (!finalValue) {
         errors.push('Your value causes a loop, or does not exist.');
       }
-      return { isValueValid: !doesValueLoopOrUnvalid, errors};
+      return { isValueValid: Boolean(finalValue), errors};
     } else {
       // It does not contain any variables
       isValueValid = true;
@@ -78,14 +72,14 @@ export function isThemeValueValid (value, type, theme, equivalentCssProperty, va
   const unity = type === 'px' ? 'px' : type === 'em' ? 'em' : '';
   style[equivalentCssProperty] = value + unity;
   if (style[equivalentCssProperty] === '') {
-    errors.push(`"${value}" is not a valid ${equivalentCssProperty} value`);
+    errors.push(`Your value is not a valid ${equivalentCssProperty} value`);
   }
   isValueValid = style[equivalentCssProperty] !== '';
 
   return { isValueValid, errors };
 }
 
-function doesValueCauseLoopOrContainsUnvalidVariables (value, theme, variableName) {
+function getFinalValueFromVariable (value, theme, variableName) {
   // Array to store all values containing variables
   const results = [];
 
@@ -97,8 +91,9 @@ function doesValueCauseLoopOrContainsUnvalidVariables (value, theme, variableNam
   while (!results.includes(finalValue)) {
     variableNames = finalValue.match(variableRegEx);
     if (variableNames && variableNames.length > 0) {
-      // store value that contain variable(s)
+      // store value that contains variable(s)
       results.push(finalValue);
+
       for (let i = 0; i < variableNames.length; i++) {
         const name = variableNames[i];
         const variableNameWithoutBrackets = name.substring(
@@ -106,14 +101,21 @@ function doesValueCauseLoopOrContainsUnvalidVariables (value, theme, variableNam
           name.lastIndexOf('}')
         );
 
-        if (typeof theme[variableNameWithoutBrackets] !== 'object') {
-          // Not a valid variable; it does not exist !
-          return true;
+        let valueToReplace = '';
+
+        if (!theme[variableNameWithoutBrackets] || !theme[variableNameWithoutBrackets].value) {
+          // Look in themeValues
+          if (!themeValues) {
+            return '';
+          }
+          valueToReplace = getInitialThemeValue(variableNameWithoutBrackets);
+        } else {
+          valueToReplace = theme[variableNameWithoutBrackets].value
         }
   
         finalValue = finalValue.replace(
           name,
-          variableNameWithoutBrackets === variableName ? value : theme[variableNameWithoutBrackets].value
+          variableNameWithoutBrackets === variableName ? value : valueToReplace
         );
       }
     } else {
@@ -122,5 +124,27 @@ function doesValueCauseLoopOrContainsUnvalidVariables (value, theme, variableNam
     }
   }
   // check if final value is either a text value or contains variables
-  return results.includes(finalValue);
+  if (results.includes(finalValue)) {
+    return '';
+  }
+  return finalValue;
+}
+
+export function getInitialThemeValue (variableName) {
+  const initialTheme = themeValues
+    .find((themeValue) => themeValue.themeProps
+      .find(props => props.variableName === variableName));
+  if (!initialTheme) {
+    // variable name does not exist!
+    return '';
+  }
+
+  const initialThemeValue = initialTheme.themeProps
+    .find(props => props.variableName === variableName);
+  if (!initialThemeValue) {
+    // variable name does not exist!
+    return '';
+  }
+
+  return initialThemeValue.defaultValue;
 }

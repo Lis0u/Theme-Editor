@@ -7,9 +7,16 @@ import './style.css';
 import { getTransformedValue, isThemeValueValid } from '../../helper/themeValueHelper';
 import ErrorLine from './ErrorLine';
 
+const MAX_NUMBER_VALUE = 33554400;
+const MAX_CHARACTERS_NUMBER = 500;
+
 const ThemeLine = ({ setEditMode, theme, themeProps, themeLine }) => {
-  const [value, setValue] = useState(themeProps.value);
-  const [radioValue, setRadioValue] = useState(themeProps.type);
+  const initialValue = themeProps && themeProps.value ? themeProps.value : themeLine.defaultValue;
+  const [value, setValue] = useState(initialValue);
+
+  const initialType = themeProps && themeProps.type ? themeProps.type : themeLine.defaultType;
+  const [radioValue, setRadioValue] = useState(initialType);
+
   const [isValueValid, setIsValueValid] = useState(true);
 
   const typeToDisplay = themeProps.type === 'em' || themeProps.type === 'px'
@@ -21,7 +28,7 @@ const ThemeLine = ({ setEditMode, theme, themeProps, themeLine }) => {
           <Grid.Row className="theme-line-title theme-line-form-row">
             <Grid.Column computer={10} data-testid="theme-line-title">
               {`${themeLine.title}${typeToDisplay}: `}
-              <strong style={{ paddingRight: '5px' }}>{getTransformedValue(themeProps, theme)}</strong>
+              <strong style={{ paddingRight: '5px' }}>{getTransformedValue(themeProps, theme, themeLine)}</strong>
               {handleColorInfoRenderer()}
             </Grid.Column>
             <Grid.Column computer={5} className="variable-name">
@@ -47,7 +54,9 @@ const ThemeLine = ({ setEditMode, theme, themeProps, themeLine }) => {
                 data-testid="theme-line-value-input"
                 error={!isValueValid}
                 value={value}
-                min={radioValue === 'em' ? 0.1 : radioValue === 'px' ? 1 : ''}
+                min={radioValue === 'em' ? -MAX_NUMBER_VALUE : radioValue === 'px' ? -MAX_NUMBER_VALUE : ''}
+                max={radioValue === 'em' ? MAX_NUMBER_VALUE : radioValue === 'px' ? MAX_NUMBER_VALUE : ''}
+                maxLength={MAX_CHARACTERS_NUMBER}
                 type={radioValue === 'text' || radioValue === 'color' ? 'text' : 'number'}
                 onChange={(e) => handleInputChange(e.target.value)}
               />
@@ -122,7 +131,7 @@ const ThemeLine = ({ setEditMode, theme, themeProps, themeLine }) => {
             height="15" 
             ry="5"
             className="color-info-rect"
-            style={{ fill: getTransformedValue(themeProps, theme) }}
+            style={{ fill: getTransformedValue(themeProps, theme, themeLine) }}
           />
         </svg>
       );
@@ -160,6 +169,7 @@ ThemeLine.propTypes = {
     title: PropTypes.string,
     variableName: PropTypes.string,
     defaultValue: PropTypes.string,
+    defaultType: PropTypes.string,
     equivalentCssProperty: PropTypes.string,
   }),
   title: PropTypes.string,
@@ -175,12 +185,13 @@ ThemeLine.defaultProps = {
   themeLine: {
     title: 'H1 color',
     defaultValue: '#000000',
+    defaultType: 'color',
     variableName: 'colors.highlight1',
     equivalentCssProperty: 'color'
   },
   themeProps: {
     value: '',
-    type: 'text',
+    type: '',
   },
   title: '',
 };

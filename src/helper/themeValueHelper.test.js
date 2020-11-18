@@ -1,4 +1,4 @@
-import { getTransformedValue, isThemeValueValid } from "./themeValueHelper";
+import { getInitialThemeValue, getTransformedValue, isThemeValueValid } from "./themeValueHelper";
 
 describe('Tests on getTransformedValue function', () => {
   it('should return directly on empty values', () => {
@@ -26,16 +26,6 @@ describe('Tests on getTransformedValue function', () => {
     const value = getTransformedValue({ value: '{colors.secondary}', type: 'text' }, theme);
     expect(value).toBe('#000000');
   });
-
-  // it('should not tolerate a loop', () => {
-  //   const theme = {
-  //     'colors.primary': { value: '{colors.secondary}', type: 'text' },
-  //     'colors.primaryBackground': { value: '#ffffff', type: 'color' },
-  //     'colors.secondary': { value: '{colors.primary}', type: 'text' },
-  //   };
-  //   const value = getTransformedValue({ value: '{colors.secondary}', type: 'text' }, theme);
-  //   expect(value).toBe('');
-  // });
 });
 
 describe('Tests on isThemeValueValid function', () => {
@@ -147,5 +137,32 @@ describe('Tests on isThemeValueValid function', () => {
   it('should return false on any random text that does not contain a variable', () => {
     const result = isThemeValueValid('randooom', 'text', {}, 'color');
     expect(result.isValueValid).toBe(false);
+  });
+
+  it('should return false on a too big number for type px', () => {
+    const result = isThemeValueValid('10000000000000', 'px', {}, 'fontSize');
+    expect(result.isValueValid).toBe(false);
+  });
+
+  it('should return false on too small number value for px', () => {
+    const result = isThemeValueValid('-10000000000000', 'px', {}, 'fontSize');
+    expect(result.isValueValid).toBe(false);
+  });
+
+  it('should return false on a too big number for type em', () => {
+    const result = isThemeValueValid('10000000000000', 'em', {}, 'fontSize');
+    expect(result.isValueValid).toBe(false);
+  });
+
+  it('should return false on too small number value for em', () => {
+    const result = isThemeValueValid('-10000000000000', 'em', {}, 'fontSize');
+    expect(result.isValueValid).toBe(false);
+  });
+});
+
+describe('Tests on getIntialValue function', () => {
+  it('should return empty value from non existing inital values', () => {
+    const result = getInitialThemeValue('colors.secondary');
+    expect(result).toBe('#ffffff');
   });
 });

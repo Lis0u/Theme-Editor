@@ -5,11 +5,12 @@ import { connect } from 'react-redux';
 import './style.css';
 import { getTransformedValue } from '../../helper/themeValueHelper';
 
-const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme }) => {
-  const transformedValue = getTransformedValue(themeProps, theme);
+const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme, defaultThemeProps }) => {
+  const transformedValue = getTransformedValue(themeProps, theme, defaultThemeProps);
 
-  const typeToDisplay = themeProps.type === 'em' || themeProps.type === 'px'
-    ? ` (${themeProps.type})` : '';
+  const initialType = themeProps && themeProps.type ? themeProps.type : defaultThemeProps.defaultType;
+  const typeToDisplay = initialType === 'em' || initialType === 'px'
+    ? ` (${initialType})` : '';
   return (
     <Button
       className="invisible-button"
@@ -50,6 +51,9 @@ const ThemeLineDisplay = ({ title, themeProps, variableName, setEditMode, theme 
 };
 
 ThemeLineDisplay.propTypes = {
+  defaultThemeProps: PropTypes.shape({
+    defaultType: PropTypes.string,
+  }),
   setEditMode: PropTypes.func,
   theme: PropTypes.shape({}),
   title: PropTypes.string,
@@ -62,6 +66,7 @@ ThemeLineDisplay.propTypes = {
 };
 
 ThemeLineDisplay.defaultProps = {
+  defaultThemeProps: { defaultType: '' },
   setEditMode: () => {},
   theme: {},
   title: '',

@@ -37,7 +37,7 @@ const ErrorLine = ({ value, type, theme, isValueValid, setIsValueValid, equivale
           <Grid.Column computer={14}>
             <div style={{ display: 'inline-flex'}}>
               <Icon name="warning sign" />
-              <p>{errors[0]}</p>
+              <p data-testid="error-shown">{errors[0]}</p>
             </div>
           </Grid.Column>
         </Grid.Row>

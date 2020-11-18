@@ -24,6 +24,7 @@ const ThemeLine = ({ themeProps, title, variableName, themeLine }) => {
         variableName={variableName}
         setEditMode={(editMode) => setIsInEditMode(editMode)}
         themeProps={themeProps}
+        defaultThemeProps={themeLine}
       />
     )
   );
@@ -34,6 +35,7 @@ ThemeLine.propTypes = {
     title: PropTypes.string,
     variableName: PropTypes.string,
     defaultValue: PropTypes.string,
+    defaultType: PropTypes.string,
     equivalentCssProperty: PropTypes.string,
   }),
   themeProps: PropTypes.shape({
@@ -45,10 +47,16 @@ ThemeLine.propTypes = {
 };
 
 ThemeLine.defaultProps = {
-  themeLine: { title: 'H1 color', defaultValue: '#000000', variableName: 'colors.h1', equivalentCssProperty: 'color' },
+  themeLine: {
+    title: 'H1 color',
+    defaultValue: '#000000',
+    variableName: 'colors.h1',
+    equivalentCssProperty: 'color',
+    type: 'color',
+  },
   themeProps: {
     value: '',
-    type: 'text',
+    type: '',
   },
   title: '',
   variableName: '',
