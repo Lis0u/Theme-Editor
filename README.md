@@ -118,12 +118,12 @@ Your object needs to follow the following norm:
 },
 ```
 With:
-* <YOUR_SECTION_TITLE> _(string)_ - Title of your section in a string type (ex. 'General colors')
-* <YOUR_PROPERTY_TITLE> _(string)_ - Title of your property (ex. 'Primary font color')
+* <YOUR_SECTION_TITLE> _(string)_ - Title of your section in a string type (ex. `'General colors'`)
+* <YOUR_PROPERTY_TITLE> _(string)_ - Title of your property (ex. `'Primary font color'`)
 * <YOUR_DEFAULT_VALUE> _(string)_ - The default value of your property - :warning: It must be a valid one !
-* <YOUR_DEAULT_TYPE> _(string)_ - The default type of your property. The type can be either 'text', 'px', 'em' ot 'color'. No other type is valid !
-* <YOUR_VARIABLE_NAME> _(string)_ - The variable Name that refers to your property value - :warning: to space/tabs/whitespace allowed ! Otherwise, the variable reference won't work.
-* <YOUR_EQUIVALENT_CSS_PROPERTY> _(string)_ - The css property that it refers to. :warning: This css property should exist ! Check on [this website](https://www.w3schools.com/cssref/) to check its existence. Beware of translating it to an inline style type (ex: 'font-size' -> 'fontSize');
+* <YOUR_DEAULT_TYPE> _(string)_ - The default type of your property. The type can be either `'text'`, `'px'`, `'em'` ot `'color'`. No other type is valid !
+* <YOUR_VARIABLE_NAME> _(string)_ - The variable name that refers to your property value - :warning: no space/tabs/whitespace allowed ! Otherwise, the variable reference won't work.
+* <YOUR_EQUIVALENT_CSS_PROPERTY> _(string)_ - The css property that it refers to. :warning: This css property should exist ! Check on [this website](https://www.w3schools.com/cssref/) to check its existence. Beware of translating it to an inline style type (ex: `'font-size'` -> `'fontSize'`);
 
 # Getting Started with Create React App
 
